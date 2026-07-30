@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Redundancy Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 p-8 font-sans min-h-screen">
+  <div class="max-w-3xl mx-auto space-y-6">
+    <a href="index.html" class="text-indigo-400 text-sm font-medium hover:underline">← Return to Dashboard</a>
+    <h1 class="text-2xl font-bold text-slate-100">Data Redundancy Removal System</h1>
+    
+    <form id="f1" class="bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-4">
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Title</label>
+        <input type="text" id="t" required class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg focus:outline-none focus:border-indigo-500 text-sm">
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Content Payload</label>
+        <textarea id="c" required rows="3" class="w-full bg-slate-950 border border-slate-800 p-2.5 rounded-lg focus:outline-none focus:border-indigo-500 text-sm"></textarea>
+      </div>
+      <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-lg text-sm font-medium transition">
+        Validate & Save
+      </button>
+    </form>
+    <div id="out" class="p-4 text-sm rounded-lg hidden font-mono"></div>
+  </div>
+  <script>
+    document.getElementById('f1').onsubmit = async (e) => {
+      e.preventDefault();
+      const res = await fetch('/api/task1/insert', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ title: t.value, content: c.value })
+      });
+      const data = await res.json();
+      out.className = `p-4 text-sm rounded-lg font-mono border ${res.ok ? 'bg-emerald-950/40 border-emerald-500 text-emerald-300' : 'bg-red-950/40 border-red-500 text-red-300'}`;
+      out.innerText = data.message;
+      out.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
