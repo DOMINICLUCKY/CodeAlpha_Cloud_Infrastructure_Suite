@@ -7,6 +7,14 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // ==========================================
+// ROOT ROUTE (Fixes "Cannot GET /" on Vercel)
+// ==========================================
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  // Note: If your homepage is named task1.html, change 'index.html' above to 'task1.html'
+});
+
+// ==========================================
 // MODULE 1: Data Redundancy Removal System
 // ==========================================
 const database = [];
