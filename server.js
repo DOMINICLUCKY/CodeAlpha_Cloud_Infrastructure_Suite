@@ -4,14 +4,27 @@ const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(express.static('public'));
 
-// ==========================================
-// ROOT ROUTE (Fixes "Cannot GET /" on Vercel)
-// ==========================================
+// 1. Absolute static file resolution for Vercel Serverless
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 2. Serve index.html or fallback at root (/)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  // Note: If your homepage is named task1.html, change 'index.html' above to 'task1.html'
+  res.sendFile(path.join(__dirname, 'public', 'index.html'), (err) => {
+    if (err) {
+      // If index.html doesn't exist, serve task1.html by default
+      res.sendFile(path.join(__dirname, 'public', 'task1.html'));
+    }
+  });
+});
+
+// 3. Catch-all route to resolve direct requests (e.g. /task1.html, /task2.html)
+app.get('/:page.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', `${req.params.page}.html`), (err) => {
+    if (err) {
+      res.status(404).send('Page not found');
+    }
+  });
 });
 
 // ==========================================
